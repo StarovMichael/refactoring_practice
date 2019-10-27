@@ -1,14 +1,33 @@
 <?php
 
-class MailConfigurator
+abstract class connect
 {
     private $settings;
-
-    private $configuration;
 
     public function setConnection($settings)
     {
         $this->settings = $settings;
+    }
+}
+
+abstract class configure
+{
+    private $configuration;
+
+    public function configure($settings)
+    {
+        foreach ($settings as $set){
+            $this->configuration = $this->settings[$set];
+        }
+        
+    }
+}
+class MailConfigurator
+{
+
+    public function __construct($settings){
+        $this->setConnection();
+        $this->configure($settings);
     }
 
     public function getSender()
@@ -16,22 +35,14 @@ class MailConfigurator
         return 'mail sender';
     }
 
-    public function configure()
-    {
-        $this->configuration = $this->settings['mailer_options'];
-        return $this;
-    }
 }
 
 class DatabaseConfigurator
 {
-    private $settings;
 
-    private $configuration;
-
-    public function setConnection($settings)
-    {
-        $this->settings = $settings;
+    public function __construct($settings){
+        $this->setConnection();
+        $this->configure($settings);
     }
 
     public function getDriver()
@@ -39,37 +50,19 @@ class DatabaseConfigurator
         return 'get some db driver';
     }
 
-    public function configure()
-    {
-        $this->configuration['dsn'] = $this->settings['dsn'];
-        $this->configuration['user'] = $this->settings['user'];
-        $this->configuration['password'] = $this->settings['password'];
-        return $this;
-    }
 }
 
 class CacheConfigurator
 {
-    private $settings;
 
-    private $configuration;
-
-    public function setConnection($settings)
-    {
-        $this->settings = $settings;
+    public function __construct($settings){
+        $this->setConnection();
+        $this->configure($settings);
     }
-
+    
     public function getStorage()
     {
         return 'get some cache storage';
     }
 
-    public function configure()
-    {
-        $this->configuration['host'] = $this->settings['host'];
-        $this->configuration['port'] = $this->settings['poer'];
-        $this->configuration['user'] = $this->settings['user'];
-        $this->configuration['password'] = $this->settings['password'];
-        return $this;
-    }
 }
